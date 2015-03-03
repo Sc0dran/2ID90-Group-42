@@ -50,7 +50,7 @@ public class BestPlayer extends DraughtsPlayer {
                     // find value of move
                     s.doMove(move);
                     try {
-                        move.value = alphaBeta(new GameNode(s), depth, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+                        move.value = alphaBeta(new GameNode(s), depth, max, Integer.MAX_VALUE, false);
                     } catch (AIStoppedException ex) {
                         return root.getBestMove();
                     }
