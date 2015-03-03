@@ -5,32 +5,41 @@
  */
 package nl.tue.s2id90.group42;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import nl.tue.s2id90.draughts.DraughtsState;
+import nl.tue.s2id90.game.GameState;
+import org10x10.dam.game.Move;
+
 /**
  *
  * @author s132303
  */
 public class GameNode {
     
+    private final DraughtsState state;
+    private ValuedMove bestMove;
     
+    public List<ValuedMove> moves;
     
-    public Integer alphabeta(Node node, int depth, int alpha, int beta, boolean maximizingPlayer){
-        if  (depth == 0 || node.childs.length == 1)
-            return node.childs[0].value;
-        if (maximizingPlayer) {
-            for (Node child : node.childs) {
-                alpha = Math.max(alpha, alphabeta(child, depth-1, alpha, beta, false));
-                if (beta <= alpha)
-                    break;
-            }
-            return alpha;
-        }else{
-            for (Node child : node.childs) {
-                beta = Math.min(beta, alphabeta(child, depth-1, alpha, beta, true));    
-                if (beta <= alpha)
-                    break;
-            }
-            return beta;
+    public GameNode(DraughtsState state){
+        this.state = state;
+        moves = new ArrayList<ValuedMove>();
+        for(Move move : state.getMoves()){
+            this.moves.add(new ValuedMove(move));
         }
     }
     
+    public DraughtsState getState() {
+        return state;
+    }
+    
+    public void setBestMove(Move move) {
+        bestMove = (ValuedMove)move;
+    }
+            
+    public Move getBestMove() {
+        return bestMove;
+    }
 }
