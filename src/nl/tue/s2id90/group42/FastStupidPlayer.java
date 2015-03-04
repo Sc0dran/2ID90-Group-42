@@ -44,7 +44,7 @@ public class FastStupidPlayer extends DraughtsPlayer {
         
 	BitBoard board = new BitBoard(s);
         //System.out.println(s.toString());
-        System.out.println(board.toString());
+        //System.out.println(board.toString());
         List<Move> moves = s.getMoves();
         if (moves.size() == 1)
             return moves.get(0);
@@ -53,7 +53,7 @@ public class FastStupidPlayer extends DraughtsPlayer {
             s.doMove(move);
             BitBoard next = new BitBoard(s);
             nextStates.put(next.toString(), move);
-            System.out.println(next.toString());
+            //System.out.println(next.toString());
             s.undoMove(move);
         }
         
@@ -63,13 +63,21 @@ public class FastStupidPlayer extends DraughtsPlayer {
         try {
             player.applyMove(board, bestmove);
         } catch (NullPointerException ex){
+            System.out.println("Something went wrong");
             Collections.shuffle(moves);
             return moves.get(0);
         }
         System.out.println("__________________");
         System.out.println(board.toString());
         //Find correct move
-        return nextStates.get(board.toString());
+        //Null-move failsafe
+        if (nextStates.get(board.toString()) != null){
+            return nextStates.get(board.toString());
+        } else {
+            System.out.println("Something went wrong");
+            Collections.shuffle(moves);
+            return moves.get(0);
+        }
     }
         
     private BitBoardMove search(BitBoardPlayer player, long mine, long his, long kings){
@@ -98,6 +106,7 @@ public class FastStupidPlayer extends DraughtsPlayer {
                             move.value = -alphaBeta(depth, -1000, -max, player.other, move.applyHis(his), move.applyMine(mine), move.applyKings(kings, player.crownrow)
                             );
                         } catch (AIStoppedException ex) {
+                            System.out.printf("search depth=%d evaluation=%d\n", depth, max);
                             return best;
                         }
 
@@ -115,7 +124,7 @@ public class FastStupidPlayer extends DraughtsPlayer {
 
                         //System.out.printf("search moves %2d %s %d\n", depth, moves, max);
                 }
-        System.out.printf("search depth=%d evaluation=%d\n", depth, max);
+        
         return best;
     }
     

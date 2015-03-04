@@ -44,7 +44,7 @@ public class BitBot extends DraughtsPlayer {
         
 	BitBoard board = new BitBoard(s);
         //System.out.println(s.toString());
-        System.out.println(board.toString());
+        //System.out.println(board.toString());
         List<Move> moves = s.getMoves();
         if (moves.size() == 1)
             return moves.get(0);
@@ -53,7 +53,7 @@ public class BitBot extends DraughtsPlayer {
             s.doMove(move);
             BitBoard next = new BitBoard(s);
             nextStates.put(next.toString(), move);
-            System.out.println(next.toString());
+            //System.out.println(next.toString());
             s.undoMove(move);
         }
         
@@ -63,13 +63,21 @@ public class BitBot extends DraughtsPlayer {
         try {
             player.applyMove(board, bestmove);
         } catch (NullPointerException ex){
+            System.out.println("Something went wrong");
             Collections.shuffle(moves);
             return moves.get(0);
         }
         System.out.println("__________________");
         System.out.println(board.toString());
         //Find correct move
-        return nextStates.get(board.toString());
+        //Null-move failsafe
+        if (nextStates.get(board.toString()) != null){
+            return nextStates.get(board.toString());
+        } else {
+            System.out.println("Something went wrong");
+            Collections.shuffle(moves);
+            return moves.get(0);
+        }
     }
         
     private BitBoardMove search(BitBoardPlayer player, long mine, long his, long kings){
