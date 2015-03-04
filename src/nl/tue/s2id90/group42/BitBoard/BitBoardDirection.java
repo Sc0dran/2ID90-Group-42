@@ -14,6 +14,7 @@ public enum BitBoardDirection
         //0 1 1 x 1
         // 1 1 1 x 1
         //0 1 1 1 x
+    
         //Jump NW
         // 0 0 0 0 0
         //0 0 0 0 0
@@ -37,6 +38,7 @@ public enum BitBoardDirection
         //1 x 1 1 1
         // x 1 1 1 0 
         //x 1 1 1 1
+    
         //Jumps NE
         // 0 0 0 0 0 
         //0 0 0 0 0 
@@ -60,6 +62,7 @@ public enum BitBoardDirection
         //0 1 1 1 1
         // 1 1 1 1 1
         //0 0 0 0 0
+    
         //Jumpes SW
         // 0 1 1 1 x
         //0 1 1 1 1
@@ -83,6 +86,7 @@ public enum BitBoardDirection
         //1 1 1 1 1 
         // 1 1 1 1 0 
         //0 0 0 0 0
+    
         //Jumpes SE
         // x 1 1 1 0 
         //1 1 1 1 0 

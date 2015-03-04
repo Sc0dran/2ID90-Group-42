@@ -226,11 +226,36 @@ public class BitBot extends DraughtsPlayer {
 
             return alpha;
 	}
-
+        
+        //Defenders
+        // 0 0 0 0 0
+        //0 0 0 0 0
+        // 0 0 0 0 0
+        //0 0 0 0 0
+        // 0 0 0 0 0
+        //0 0 0 0 0
+        // 1 1 0 1 0
+        //0 1 0 0 0
+        // 1 0 0 0 0
+        //0 1 0 0 0
+        
+        // 0 0 0 0 0
+        //0 0 0 0 0
+        // 0 0 0 0 0
+        //0 0 0 0 0
+        // 0 0 0 0 0
+        //0 0 0 0 0
+        // 0 0 0 0 0
+        //x x x x x
+        // x x 0 0 0
+        //x x 0 0 0
+        
 	private long evaluate(long mine, long his, long kings)
 	{
-		return Long.bitCount(mine & ~kings) + 5 * Long.bitCount(mine & kings)
-			 - Long.bitCount(his  & ~kings) - 5 * Long.bitCount(his  & kings);
+            long pawns = Long.bitCount(mine & ~kings) + 3 * Long.bitCount(mine & kings)
+                        - Long.bitCount(his  & ~kings) - 3 * Long.bitCount(his  & kings);
+            
+            return 10 * pawns;
 
 	}
 	
