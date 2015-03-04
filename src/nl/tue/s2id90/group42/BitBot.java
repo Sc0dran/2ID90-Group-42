@@ -1,10 +1,5 @@
 package nl.tue.s2id90.group42;
 
-import nl.tue.s2id90.group42.BitBoard.BitBoardMove;
-import nl.tue.s2id90.group42.BitBoard.BitBoardDirection;
-import nl.tue.s2id90.group42.BitBoard.BitBoardMoveList;
-import nl.tue.s2id90.group42.BitBoard.BitBoardPlayer;
-import nl.tue.s2id90.group42.BitBoard.BitBoard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,6 +7,11 @@ import java.util.List;
 import java.util.Map;
 import nl.tue.s2id90.draughts.DraughtsState;
 import nl.tue.s2id90.draughts.player.DraughtsPlayer;
+import nl.tue.s2id90.group42.BitBoard.BitBoard;
+import nl.tue.s2id90.group42.BitBoard.BitBoardDirection;
+import nl.tue.s2id90.group42.BitBoard.BitBoardMove;
+import nl.tue.s2id90.group42.BitBoard.BitBoardMoveList;
+import nl.tue.s2id90.group42.BitBoard.BitBoardPlayer;
 import org10x10.dam.game.Move;
 
 /**
@@ -67,18 +67,18 @@ public class BitBot extends DraughtsPlayer {
         //Failsafe
         try {
             player.applyMove(board, bestmove);
+            System.out.println("__________________");
+            System.out.println(board.toString());
+            //Find correct move
+            //Null-move failsafe
+            if (nextStates.get(board.toString()) != null){
+                return nextStates.get(board.toString());
+            } else {
+                System.out.println("Something went wrong");
+                Collections.shuffle(moves);
+                return moves.get(0);
+            }
         } catch (NullPointerException ex){
-            System.out.println("Something went wrong");
-            Collections.shuffle(moves);
-            return moves.get(0);
-        }
-        System.out.println("__________________");
-        System.out.println(board.toString());
-        //Find correct move
-        //Null-move failsafe
-        if (nextStates.get(board.toString()) != null){
-            return nextStates.get(board.toString());
-        } else {
             System.out.println("Something went wrong");
             Collections.shuffle(moves);
             return moves.get(0);
@@ -111,6 +111,7 @@ public class BitBot extends DraughtsPlayer {
                             move.value = -alphaBeta(depth, -1000, -max, player.other, move.applyHis(his), move.applyMine(mine), move.applyKings(kings, player.crownrow)
                             );
                         } catch (AIStoppedException ex) {
+                            System.out.printf("search depth=%d evaluation=%d\n", depth, max);
                             return best;
                         }
 
@@ -128,7 +129,7 @@ public class BitBot extends DraughtsPlayer {
 
                         //System.out.printf("search moves %2d %s %d\n", depth, moves, max);
                 }
-        System.out.printf("search depth=%d evaluation=%d\n", depth, max);
+        
         return best;
     }
     
@@ -228,35 +229,35 @@ public class BitBot extends DraughtsPlayer {
 
 	private long evaluate(long mine, long his, long kings)
 	{
-            return Long.bitCount(mine & ~kings) + 5 * Long.bitCount(mine & kings)
-                     - Long.bitCount(his  & ~kings) - 5 * Long.bitCount(his  & kings);
+		return Long.bitCount(mine & ~kings) + 5 * Long.bitCount(mine & kings)
+			 - Long.bitCount(his  & ~kings) - 5 * Long.bitCount(his  & kings);
 
 	}
 	
 	private boolean canJump(BitBoardPlayer player, long mine, long his, long kings)
 	{
-            for (BitBoardDirection dir : player.directions)
-            {
-                // only use kings if direction requires it
-                long source = mine;
+		for (BitBoardDirection dir : player.directions)
+		{
+			// only use kings if direction requires it
+			long source = mine;
 
-                // find origins of empty destination squares of jumps
-                long jumpdest = ((source & dir.jumps) << dir.jump_shl) >>> dir.jump_shr;
-                long jumporig = ((jumpdest & ~(mine | his)) >>> dir.jump_shl) << dir.jump_shr;
+			// find origins of empty destination squares of jumps
+			long jumpdest = ((source & dir.jumps) << dir.jump_shl) >>> dir.jump_shr;
+			long jumporig = ((jumpdest & ~(mine | his)) >>> dir.jump_shl) << dir.jump_shr;
+			
+			// find origins of squares on which a capture is possible
+			long captdest = (((source & dir.moves & EVENSQUARE) << dir.move_shl_e) >>> dir.move_shr_e)
+						 | (((source & dir.moves & ODDSQUARE) << dir.move_shl_o) >>> dir.move_shr_o);
 
-                // find origins of squares on which a capture is possible
-                long captdest = (((source & dir.moves & EVENSQUARE) << dir.move_shl_e) >>> dir.move_shr_e)
-                                         | (((source & dir.moves & ODDSQUARE) << dir.move_shl_o) >>> dir.move_shr_o);
+			long captorig = (((captdest & his & ODDSQUARE) >>> dir.move_shl_e) << dir.move_shr_e)
+			 			 | (((captdest & his & EVENSQUARE) >>> dir.move_shl_o) << dir.move_shr_o);
 
-                long captorig = (((captdest & his & ODDSQUARE) >>> dir.move_shl_e) << dir.move_shr_e)
-                                         | (((captdest & his & EVENSQUARE) >>> dir.move_shl_o) << dir.move_shr_o);
-
-                // can jump and capture from at least one square, position not stable
-                if ((jumporig & captorig) != 0)
-                    return true;
-            }
+			// can jump and capture from at least one square, position not stable
+			if ((jumporig & captorig) != 0)
+				return true;
+		}
 		
-            // position stable
-            return false;			
+		// position stable
+		return false;			
 	}
 }
