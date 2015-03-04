@@ -40,6 +40,7 @@ public class BitBot extends DraughtsPlayer {
 
     @Override
     public Move getMove(DraughtsState s) {
+        Move best;
         BitBoardPlayer player;
         if (s.isWhiteToMove()){
             player = BitBoardPlayer.PLAYER2;
@@ -72,17 +73,18 @@ public class BitBot extends DraughtsPlayer {
             //Find correct move
             //Null-move failsafe
             if (nextStates.get(board.toString()) != null){
-                return nextStates.get(board.toString());
+                best = nextStates.get(board.toString());
             } else {
                 System.out.println("Something went wrong");
                 Collections.shuffle(moves);
-                return moves.get(0);
+                best = moves.get(0);
             }
         } catch (NullPointerException ex){
             System.out.println("Something went wrong");
             Collections.shuffle(moves);
-            return moves.get(0);
+            best = moves.get(0);
         }
+        return best;
     }
         
     private BitBoardMove search(BitBoardPlayer player, long mine, long his, long kings){
@@ -96,39 +98,39 @@ public class BitBot extends DraughtsPlayer {
         if (moves.size() == 1){
             best = moves.firstElement();
         } else
-                // try to look a little further ahead as long as there is time
-                while (! stop)
+            // try to look a little further ahead as long as there is time
+            while (! stop)
+            {
+                depth++;
+
+                // try each possible move - there's going to be some reordering as well
+                for (int i = 0; i < moves.size(); i++)
                 {
-                    depth++;
+                    BitBoardMove move = moves.get(i);
 
-                    // try each possible move - there's going to be some reordering as well
-                    for (int i = 0; i < moves.size(); i++)
-                    {
-                        BitBoardMove move = moves.get(i);
-                        
-                        try {
-                            // find value of move
-                            move.value = -alphaBeta(depth, -1000, -max, player.other, move.applyHis(his), move.applyMine(mine), move.applyKings(kings, player.crownrow)
-                            );
-                        } catch (AIStoppedException ex) {
-                            System.out.printf("search depth=%d evaluation=%d\n", depth, max);
-                            return best;
-                        }
-
-                        // remember best move so far
-                        if (move.value > max)
-                        {
-                            moves.remove(i);
-                            moves.insertElementAt(move, 0);
-
-                            max = move.value;
-                            best = move;
-                        }
-
+                    try {
+                        // find value of move
+                        move.value = -alphaBeta(depth, -1000, -max, player.other, move.applyHis(his), move.applyMine(mine), move.applyKings(kings, player.crownrow)
+                        );
+                    } catch (AIStoppedException ex) {
+                        System.out.printf("search depth=%d evaluation=%d\n", depth, max);
+                        return best;
                     }
 
-                        //System.out.printf("search moves %2d %s %d\n", depth, moves, max);
+                    // remember best move so far
+                    if (move.value > max)
+                    {
+                        moves.remove(i);
+                        moves.insertElementAt(move, 0);
+
+                        max = move.value;
+                        best = move;
+                    }
+
                 }
+
+                    //System.out.printf("search moves %2d %s %d\n", depth, moves, max);
+            }
         
         return best;
     }
@@ -147,13 +149,13 @@ public class BitBot extends DraughtsPlayer {
 
                 // return static evaluation of boardstate
                 else
-                    return evaluate(mine, his, kings);
+                    return evaluate(player, mine, his, kings);
 
             // try all possible moves
             BitBoardMoveList moves = new BitBoardMoveList(player, mine, his, kings);
 
             if (moves.size() == 0)
-                return evaluate(mine, his, kings);
+                return evaluate(player, mine, his, kings);
 
             for (BitBoardMove move : moves)
             {
@@ -187,13 +189,13 @@ public class BitBot extends DraughtsPlayer {
 
             }
             if (depth <= maxdepth)
-                    return evaluate(mine, his, kings);
+                    return evaluate(player, mine, his, kings);
 
             // try all possible moves
             BitBoardMoveList moves = new BitBoardMoveList(player, mine, his, kings);
 
             if (moves.size() == 0)
-                return evaluate(mine, his, kings);
+                return evaluate(player, mine, his, kings);
 
             for (BitBoardMove move : moves)
             {
@@ -262,7 +264,7 @@ public class BitBot extends DraughtsPlayer {
         // 0 0 0 0 1
         //1 1 1 1 1
         
-	private long evaluate(long mine, long his, long kings)
+	private long evaluate(BitBoardPlayer player, long mine, long his, long kings)
 	{   
             long edgemask = 0b11111100000000110000000011000000001100000000111111L;
             long pawns = Long.bitCount(mine & ~kings) + 3 * Long.bitCount(mine & kings)
@@ -270,6 +272,7 @@ public class BitBot extends DraughtsPlayer {
             long defenders = Long.bitCount((mine >>> 5 | mine >>> 6 | mine << 4 | mine << 5) & mine) - Long.bitCount((his >>> 5 | his >>> 6 | his << 4 | his << 5) & his);
             long safepawns = Long.bitCount(mine & ~kings & edgemask) + 3 * Long.bitCount(mine & kings & edgemask)
                         - Long.bitCount(his  & ~kings & edgemask) - 3 * Long.bitCount(his  & kings & edgemask);
+            //long movable = Long.bitCount((mine >>> 5 | mine >>> 6 | mine << 4 | mine << 5) & mine) - Long.bitCount((his >>> 5 | his >>> 6 | his << 4 | his << 5) & his);
             return 10 * pawns + 7 * safepawns + 5 * defenders;
 
 	}
