@@ -75,10 +75,7 @@ public class BitBoardMoveList extends Vector<BitBoardMove>
 
         for (BitBoardDirection dir : player.directions)
         {
-            // use only pieces or kings depending on player
-            long source = player.canMove(dir) 
-                            ? (from == null ? mine : (1L << from))
-                            : (from == null ? mine : (1L << from)) & kings;
+            long source = (from == null ? mine : (1L << from)) & kings;
 
             // find jump destinations and origins of empty destination squares
             long jumpdest = ((source & dir.jumps) << dir.jump_shl) >>> dir.jump_shr;
