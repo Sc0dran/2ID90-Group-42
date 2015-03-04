@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import nl.tue.s2id90.draughts.DraughtsState;
 import static nl.tue.s2id90.draughts.DraughtsState.BLACKKING;
 import static nl.tue.s2id90.draughts.DraughtsState.BLACKPIECE;
+import static nl.tue.s2id90.draughts.DraughtsState.EMPTY;
 import static nl.tue.s2id90.draughts.DraughtsState.WHITEKING;
 import static nl.tue.s2id90.draughts.DraughtsState.WHITEPIECE;
 import nl.tue.s2id90.draughts.player.DraughtsPlayer;
@@ -84,7 +85,7 @@ public class BestPlayer extends DraughtsPlayer {
         List<ValuedMove> moves = node.moves;
         boolean capture = false;
         
-        //no moves left   
+        //no moves left
         if (moves.size() == 0) {
             return evaluate(state);
         }
@@ -130,29 +131,102 @@ public class BestPlayer extends DraughtsPlayer {
         int value = 0;
         if (isWhite) {
             for (int i = 0; i != pieces.length; i++) {
+                boolean edge = false;
+                if (i % 5 == 0 || i % 5 == 1) {
+                    edge = true;
+                }
                 if (pieces[i] == WHITEPIECE) {
                     value += 1;
+                    if (edge) {
+                        if (i - 9 <= 0) {
+                            value += 1;
+                        }
+                        else if (pieces[i - 5] == EMPTY) {
+                            value += 1;
+                        }
+                    }
+                    else {
+                        if (i - 9 <= 0) {
+                            value += 1;
+                        }
+                        else if (pieces[i - 5] == EMPTY || pieces[i - 6] == EMPTY) {
+                            value += 1;
+                        }
+                    }
                 } else if (pieces[i] == WHITEKING) {
-                    value += 5;
+                    value += 6;
                 } else if (pieces[i] == BLACKPIECE) {
                     value -= 1;
+                    if (edge) {
+                        if (i + 9 >= 46) {
+                            value -= 1;
+                        }
+                        else if (pieces[i + 5] == EMPTY) {
+                            value -= 1;
+                        }
+                    }
+                    else {
+                        if (i + 9 >= 46) {
+                            value -= 1;
+                        }
+                        else if (pieces[i + 5] == EMPTY || pieces[i + 6] == EMPTY) {
+                            value -= 1;
+                        }
+                    }
                 } else if (pieces[i] == BLACKKING) {
-                    value -= 5;
+                    value -= 6;
                 } 
             }
         } else {
             for (int i = 0; i != pieces.length; i++) {
+                boolean edge = false;
+                if (i % 5 == 0 || i % 5 == 1) {
+                    edge = true;
+                }
                 if (pieces[i] == WHITEPIECE) {
                     value -= 1;
+                    if (edge) {
+                        if (i - 9 <= 0) {
+                            value -= 1;
+                        }
+                        else if (pieces[i + 5] == EMPTY) {
+                            value -= 1;
+                        }
+                    }
+                    else {
+                        if (i - 9 <= 0) {
+                            value -= 1;
+                        }
+                        else if (pieces[i - 5] == EMPTY || pieces[i - 6] == EMPTY) {
+                            value -= 1;
+                        }
+                    }
                 } else if (pieces[i] == WHITEKING) {
-                    value -= 5;
+                    value -= 6;
                 } else if (pieces[i] == BLACKPIECE) {
                     value += 1;
+                    if (edge) {
+                        if (i + 9 >= 46) {
+                            value += 1;
+                        }
+                        else if (pieces[i + 5] == EMPTY) {
+                            value += 1;
+                        }
+                    }
+                    else {
+                        if (i + 9 >= 46) {
+                            value += 1;
+                        }
+                        else if (pieces[i + 5] == EMPTY || pieces[i + 6] == EMPTY) {
+                            value += 1;
+                        }
+                    }
                 } else if (pieces[i] == BLACKKING) {
-                    value += 5;
+                    value += 6;
                 } 
             }
         }
+        
         return value;
     }
 }
