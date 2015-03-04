@@ -138,41 +138,28 @@ public class BestPlayer extends DraughtsPlayer {
                 if (pieces[i] == WHITEPIECE) {
                     value += 1;
                     if (edge) {
-                        if (i - 9 <= 0) {
+                        if (i + 5 > 50) {
                             value += 1;
                         }
-                        else if (pieces[i - 5] == EMPTY) {
+                        else if (pieces[i + 5] == WHITEPIECE || pieces[i + 5] == WHITEKING) {
                             value += 1;
                         }
                     }
                     else {
-                        if (i - 9 <= 0) {
+                        if (i + 5 > 50) {
                             value += 1;
                         }
-                        else if (pieces[i - 5] == EMPTY || pieces[i - 6] == EMPTY) {
+                        else if (   pieces[i + 5] == WHITEPIECE || 
+                                    pieces[i + 6] == WHITEPIECE || 
+                                    pieces[i + 5] == WHITEKING || 
+                                    pieces[i + 6] == WHITEKING) {
                             value += 1;
                         }
                     }
                 } else if (pieces[i] == WHITEKING) {
                     value += 6;
                 } else if (pieces[i] == BLACKPIECE) {
-                    value -= 1;
-                    if (edge) {
-                        if (i + 9 >= 46) {
-                            value -= 1;
-                        }
-                        else if (pieces[i + 5] == EMPTY) {
-                            value -= 1;
-                        }
-                    }
-                    else {
-                        if (i + 9 >= 46) {
-                            value -= 1;
-                        }
-                        else if (pieces[i + 5] == EMPTY || pieces[i + 6] == EMPTY) {
-                            value -= 1;
-                        }
-                    }
+                    value -= 2;
                 } else if (pieces[i] == BLACKKING) {
                     value -= 6;
                 } 
@@ -184,40 +171,27 @@ public class BestPlayer extends DraughtsPlayer {
                     edge = true;
                 }
                 if (pieces[i] == WHITEPIECE) {
-                    value -= 1;
-                    if (edge) {
-                        if (i - 9 <= 0) {
-                            value -= 1;
-                        }
-                        else if (pieces[i + 5] == EMPTY) {
-                            value -= 1;
-                        }
-                    }
-                    else {
-                        if (i - 9 <= 0) {
-                            value -= 1;
-                        }
-                        else if (pieces[i - 5] == EMPTY || pieces[i - 6] == EMPTY) {
-                            value -= 1;
-                        }
-                    }
+                    value -= 2;
                 } else if (pieces[i] == WHITEKING) {
                     value -= 6;
                 } else if (pieces[i] == BLACKPIECE) {
                     value += 1;
                     if (edge) {
-                        if (i + 9 >= 46) {
+                        if (i - 5 < 1) {
                             value += 1;
                         }
-                        else if (pieces[i + 5] == EMPTY) {
+                        else if (pieces[i - 5] == BLACKPIECE || pieces[i - 5] == BLACKKING) {
                             value += 1;
                         }
                     }
                     else {
-                        if (i + 9 >= 46) {
+                        if (i - 5 < 1) {
                             value += 1;
                         }
-                        else if (pieces[i + 5] == EMPTY || pieces[i + 6] == EMPTY) {
+                        else if (   pieces[i - 5] == BLACKPIECE || 
+                                    pieces[i - 6] == BLACKPIECE || 
+                                    pieces[i - 5] == BLACKKING || 
+                                    pieces[i - 6] == BLACKKING) {
                             value += 1;
                         }
                     }
