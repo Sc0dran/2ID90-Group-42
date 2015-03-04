@@ -13,7 +13,7 @@ import org10x10.dam.game.Move;
  *
  * @author s121924
  */
-public class FastStupidPlayer extends DraughtsPlayer {
+public class BitBot extends DraughtsPlayer {
     
     private boolean stop = false;
     private boolean isWhite;
@@ -24,8 +24,8 @@ public class FastStupidPlayer extends DraughtsPlayer {
     @Override
     public void stop() { stop = true; }
     
-    public FastStupidPlayer() {
-        super(FastStupidPlayer.class.getResource("resources/spongebob.png"));
+    public BitBot() {
+        super(BitBot.class.getResource("resources/spongebob.png"));
     }
     
     @Override
@@ -215,35 +215,35 @@ public class FastStupidPlayer extends DraughtsPlayer {
 
 	private long evaluate(long mine, long his, long kings)
 	{
-		return Long.bitCount(mine & ~kings) + 5 * Long.bitCount(mine & kings)
-			 - Long.bitCount(his  & ~kings) - 5 * Long.bitCount(his  & kings);
+            return Long.bitCount(mine & ~kings) + 5 * Long.bitCount(mine & kings)
+                     - Long.bitCount(his  & ~kings) - 5 * Long.bitCount(his  & kings);
 
 	}
 	
 	private boolean canJump(BitBoardPlayer player, long mine, long his, long kings)
 	{
-		for (Direction dir : player.directions)
-		{
-			// only use kings if direction requires it
-			long source = mine;
+            for (Direction dir : player.directions)
+            {
+                // only use kings if direction requires it
+                long source = mine;
 
-			// find origins of empty destination squares of jumps
-			long jumpdest = ((source & dir.jumps) << dir.jump_shl) >>> dir.jump_shr;
-			long jumporig = ((jumpdest & ~(mine | his)) >>> dir.jump_shl) << dir.jump_shr;
-			
-			// find origins of squares on which a capture is possible
-			long captdest = (((source & dir.moves & EVENSQUARE) << dir.move_shl_e) >>> dir.move_shr_e)
-						 | (((source & dir.moves & ODDSQUARE) << dir.move_shl_o) >>> dir.move_shr_o);
+                // find origins of empty destination squares of jumps
+                long jumpdest = ((source & dir.jumps) << dir.jump_shl) >>> dir.jump_shr;
+                long jumporig = ((jumpdest & ~(mine | his)) >>> dir.jump_shl) << dir.jump_shr;
 
-			long captorig = (((captdest & his & ODDSQUARE) >>> dir.move_shl_e) << dir.move_shr_e)
-			 			 | (((captdest & his & EVENSQUARE) >>> dir.move_shl_o) << dir.move_shr_o);
+                // find origins of squares on which a capture is possible
+                long captdest = (((source & dir.moves & EVENSQUARE) << dir.move_shl_e) >>> dir.move_shr_e)
+                                         | (((source & dir.moves & ODDSQUARE) << dir.move_shl_o) >>> dir.move_shr_o);
 
-			// can jump and capture from at least one square, position not stable
-			if ((jumporig & captorig) != 0)
-				return true;
-		}
+                long captorig = (((captdest & his & ODDSQUARE) >>> dir.move_shl_e) << dir.move_shr_e)
+                                         | (((captdest & his & EVENSQUARE) >>> dir.move_shl_o) << dir.move_shr_o);
+
+                // can jump and capture from at least one square, position not stable
+                if ((jumporig & captorig) != 0)
+                    return true;
+            }
 		
-		// position stable
-		return false;			
+            // position stable
+            return false;			
 	}
 }

@@ -111,13 +111,13 @@ public enum Direction
 
 	Direction(long m, long j, long mle, long mlo, long mre, long mro, long jl, long jr)
 	{
-		moves = m;
-		jumps = j;
-		move_shl_e = mle;
-		move_shr_e = mre;
-		move_shl_o = mlo;
-		move_shr_o = mro;
-		jump_shl = jl;
-		jump_shr = jr;
+            moves = m;
+            jumps = j;
+            move_shl_e = mle;
+            move_shr_e = mre;
+            move_shl_o = mlo;
+            move_shr_o = mro;
+            jump_shl = jl;
+            jump_shr = jr;
 	}
 }
