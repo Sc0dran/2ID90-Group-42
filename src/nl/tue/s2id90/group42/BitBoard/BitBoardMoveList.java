@@ -1,4 +1,4 @@
-package nl.tue.s2id90.group42;
+package nl.tue.s2id90.group42.BitBoard;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -41,7 +41,7 @@ public class BitBoardMoveList extends Vector<BitBoardMove>
 
     protected void findMoves(BitBoardPlayer player, long mine, long his, long kings)
     {
-        for (Direction dir : player.directions)
+        for (BitBoardDirection dir : player.directions)
         {
             // use pieces or kings depending on player
             long source = (player.canMove(dir) ? mine : mine & kings) & dir.moves; 
@@ -73,7 +73,7 @@ public class BitBoardMoveList extends Vector<BitBoardMove>
                                         ? this
                                         : new BitBoardMoveList();
 
-        for (Direction dir : player.directions)
+        for (BitBoardDirection dir : player.directions)
         {
             // use only pieces or kings depending on player
             long source = player.canMove(dir) 

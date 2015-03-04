@@ -1,4 +1,4 @@
-package nl.tue.s2id90.group42;
+package nl.tue.s2id90.group42.BitBoard;
 
 public enum BitBoardState
 { 

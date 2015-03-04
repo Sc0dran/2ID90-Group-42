@@ -1,6 +1,6 @@
-package nl.tue.s2id90.group42;
+package nl.tue.s2id90.group42.BitBoard;
 
-public enum Direction
+public enum BitBoardDirection
 {
 	
         //Moves NW
@@ -109,7 +109,7 @@ public enum Direction
 	public long jump_shl; //Jump left bit shift
 	public long jump_shr; //Jump right bit shift
 
-	Direction(long m, long j, long mle, long mlo, long mre, long mro, long jl, long jr)
+	BitBoardDirection(long m, long j, long mle, long mlo, long mre, long mro, long jl, long jr)
 	{
             moves = m;
             jumps = j;

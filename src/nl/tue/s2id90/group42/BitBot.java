@@ -1,5 +1,10 @@
 package nl.tue.s2id90.group42;
 
+import nl.tue.s2id90.group42.BitBoard.BitBoardMove;
+import nl.tue.s2id90.group42.BitBoard.BitBoardDirection;
+import nl.tue.s2id90.group42.BitBoard.BitBoardMoveList;
+import nl.tue.s2id90.group42.BitBoard.BitBoardPlayer;
+import nl.tue.s2id90.group42.BitBoard.BitBoard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -230,7 +235,7 @@ public class BitBot extends DraughtsPlayer {
 	
 	private boolean canJump(BitBoardPlayer player, long mine, long his, long kings)
 	{
-            for (Direction dir : player.directions)
+            for (BitBoardDirection dir : player.directions)
             {
                 // only use kings if direction requires it
                 long source = mine;
