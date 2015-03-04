@@ -254,8 +254,8 @@ public class BitBot extends DraughtsPlayer {
 	{
             long pawns = Long.bitCount(mine & ~kings) + 3 * Long.bitCount(mine & kings)
                         - Long.bitCount(his  & ~kings) - 3 * Long.bitCount(his  & kings);
-            
-            return 10 * pawns;
+            long defenders = Long.bitCount((mine >>> 5 | mine >>> 6 | mine << 4 | mine << 5) & mine) - Long.bitCount((his >>> 5 | his >>> 6 | his << 4 | his << 5) & his);
+            return 10 * pawns + 5 * defenders;
 
 	}
 	
