@@ -266,13 +266,15 @@ public class BitBot extends DraughtsPlayer {
         
 	private long evaluate(BitBoardPlayer player, long mine, long his, long kings)
 	{   
-            long edgeMask = 0b11111100000000110000000011000000001100000000111111L;
-            long midMask = 0b00000000000000011111111111111111111000000000000000L;
+            long edgeMask = 0b11111100000000110000000011000000001100000000111111L; //Checking for any pawns which are on the edge of the board
+            long midMask = 0b00000000000000011111111111111111111000000000000000L; //Checking for any pawns which are in the middle of the board
             long defenseMask;
             long attackMask;
             if (player == BitBoardPlayer.PLAYER1) {
-                defenseMask = 0b11111111110000000000000000000000000000000000000000L;
-                attackMask = 0b00000000000000000000000000000000000000001111111111L;
+                //Checking for any pawns which are on the first 2 rows of the board
+                defenseMask = 0b11111111110000000000000000000000000000000000000000L; 
+                //Checking for any pawns which are on the last 2 rows of the board
+                attackMask = 0b00000000000000000000000000000000000000001111111111L; 
             }
             else {
                 defenseMask = 0b00000000000000000000000000000000000000001111111111L;
