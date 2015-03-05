@@ -266,14 +266,28 @@ public class BitBot extends DraughtsPlayer {
         
 	private long evaluate(BitBoardPlayer player, long mine, long his, long kings)
 	{   
-            long edgemask = 0b11111100000000110000000011000000001100000000111111L;
+            long edgeMask = 0b11111100000000110000000011000000001100000000111111L;
+            long midMask = 0b00000000000000011111111111111111111000000000000000L;
+            long defenseMask;
+            long attackMask;
+            if (player == BitBoardPlayer.PLAYER1) {
+                defenseMask = 0b11111111110000000000000000000000000000000000000000L;
+                attackMask = 0b00000000000000000000000000000000000000001111111111L;
+            }
+            else {
+                defenseMask = 0b00000000000000000000000000000000000000001111111111L;
+                attackMask = 0b11111111110000000000000000000000000000000000000000L;
+            }
+            long defense = Long.bitCount(mine & defenseMask - his & defenseMask);
+            long attack = Long.bitCount(mine & attackMask - his & attackMask);
+            long mid = Long.bitCount(mine & midMask - his & midMask);
             long pawns = Long.bitCount(mine & ~kings) + 3 * Long.bitCount(mine & kings)
                         - Long.bitCount(his  & ~kings) - 3 * Long.bitCount(his  & kings);
             long defenders = Long.bitCount((mine >>> 5 | mine >>> 6 | mine << 4 | mine << 5) & mine) - Long.bitCount((his >>> 5 | his >>> 6 | his << 4 | his << 5) & his);
-            long safepawns = Long.bitCount(mine & ~kings & edgemask) + 3 * Long.bitCount(mine & kings & edgemask)
-                        - Long.bitCount(his  & ~kings & edgemask) - 3 * Long.bitCount(his  & kings & edgemask);
+            long safepawns = Long.bitCount(mine & ~kings & edgeMask) + 3 * Long.bitCount(mine & kings & edgeMask)
+                        - Long.bitCount(his  & ~kings & edgeMask) - 3 * Long.bitCount(his  & kings & edgeMask);
             //long movable = Long.bitCount((mine >>> 5 | mine >>> 6 | mine << 4 | mine << 5) & mine) - Long.bitCount((his >>> 5 | his >>> 6 | his << 4 | his << 5) & his);
-            return 10 * pawns + 7 * safepawns + 5 * defenders;
+            return 10 * pawns + 4 * safepawns + 5 * defenders + 2 * defense + 2 * attack + 2 * mid;
 
 	}
 	
